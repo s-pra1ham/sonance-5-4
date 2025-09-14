@@ -1,0 +1,318 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent; /* Removes tap highlight on mobile */
+  touch-action: manipulation; /* Improves touch responsiveness */
+  -webkit-touch-callout: none; /* Prevents callout to copy image, etc when tap to hold */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.nextjs-devtools {
+  display: none !important;
+}
+/* Custom range slider styles */
+@layer components {
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    outline: none;
+    background-size: 0% 100%;
+    background-image: linear-gradient(#fff, #fff);
+    background-repeat: no-repeat;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #10B981;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s ease-in-out;
+  }
+
+  input[type="range"]:hover::-webkit-slider-thumb {
+    background: #059669;
+  }
+
+  input[type="range"]:hover::-moz-range-thumb {
+    background: #059669;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+  }
+
+  .progress-bar {
+    position: relative;
+  }
+
+  .progress-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    background: #10B981;
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Card hover animation */
+.hover-card-animation {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-card-animation:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Better touch targets for mobile devices */
+@media (max-width: 640px) {
+  button, 
+  [role="button"],
+  input,
+  select,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Adjust padding for mobile spacing */
+  .sm-touch-padding {
+    padding: 0.75rem !important;
+  }
+  
+  /* Ensure inputs are large enough to tap */
+  input[type="range"]::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+  }
+  
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Improve mobile scrolling */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Better mobile text sizing */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Ensure good touch targets on tablets */
+  button, 
+  [role="button"],
+  input,
+  select,
+  a {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}
+
+/* Add extra small breakpoint for very small phones */
+@media (max-width: 375px) {
+  .text-xs {
+    font-size: 0.6875rem; /* 11px */
+  }
+  
+  .p-4 {
+    padding: 0.75rem;
+  }
+  
+  .gap-4 {
+    gap: 0.75rem;
+  }
+}
+
+/* Prevent animation interference with static elements */
+.static-text {
+  will-change: auto;
+  transform: none;
+  animation: none;
+}
+
+/* Optimize animations */
+@keyframes pulse {
+  0% { opacity: 0.2; }
+  100% { opacity: 0.4; }
+}
+
+/* Improve scroll performance */
+.custom-scrollbar {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Optimize backdrop blur */
+.backdrop-blur-md {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Mobile-specific animations */
+@media (max-width: 640px) {
+  .hover-card-animation:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Reduce animation intensity on mobile */
+  .animate-spin-slow {
+    animation-duration: 15s !important;
+  }
+}
+
+/* Responsive grid utilities */
+@media (max-width: 480px) {
+  .grid-cols-2 > * {
+    min-width: 0;
+  }
+}
+
+/* Safe area insets for mobile devices with notches */
+@supports (padding: max(0px)) {
+  .safe-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Horizontal scroll indicators */
+.scroll-container {
+  position: relative;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 2px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.scroll-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 1px;
+  transition: width 0.2s ease;
+}
+
+/* Mobile scroll hints */
+@media (max-width: 640px) {
+  .scroll-hint {
+    animation: scrollHint 2s ease-in-out infinite;
+  }
+  
+  @keyframes scrollHint {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+}
