@@ -453,7 +453,9 @@ export default function Home() {
     if (currentSong) {
       setPlaylistSongs(prev => {
         const newPlaylistSongs = new Map<string, Set<number>>(prev);
-        const playlistSet = new Set(newPlaylistSongs.get(playlistName) || new Set());
+        // Add the <number> generic type argument here:
+const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Set<number>());
+
         
         if (playlistSet.has(currentSong.id)) {
           // Song already in playlist, show message
