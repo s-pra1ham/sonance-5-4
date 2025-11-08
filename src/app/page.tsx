@@ -473,11 +473,12 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
   }, [currentSong]);
 
   // Handle creating new playlist
-  const handleCreatePlaylist = useCallback((playlistName: string, description: string) => {
+  const handleCreatePlaylist = useCallback((playlistName: string, description?: string) => {
     if (playlistName.trim()) {
       setPlaylistSongs(prev => {
-        const newPlaylistSongs = new Map<string, Set<number>>(availablePlaylists);
-        
+        // Clone the previous map instead of using undefined `availablePlaylists`
+        const newPlaylistSongs = new Map<string, Set<number>>(prev);
+
         if (newPlaylistSongs.has(playlistName)) {
           // Playlist already exists
           setToast({ message: `Playlist "${playlistName}" already exists`, type: 'error' });
@@ -737,6 +738,12 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
     }
   }, [audioRef, currentSong, handleAudioEnded]);
 
+  // Create a narrowed reference for the expanded song to avoid null/undefined usage in JSX
+  const expandedSong = showExpandedCard && currentSong ? currentSong : null;
+
+  // Provide a non-null song to NowPlayingBar (fallback to first song)
+  const nowPlayingSong: Song = currentSong ?? songs[0];
+
   return (
     <div className="h-screen flex overflow-hidden bg-gray-50 p-1 sm:p-2 md:p-3">
       {/* Mobile overlay */}
@@ -763,7 +770,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
               className="w-10 h-10 bg-white text-gray-900 rounded-full flex items-center justify-center flex-shrink-0 hover:bg-gray-200 transition-all cursor-pointer"
               aria-label="Home"
               onClick={(e) => {
-                e.preventDefault();
+                e?.preventDefault?.();
                 resetOtherPages([]);
                 if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                   setIsSidebarVisible(false);
@@ -800,7 +807,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
             }
             label="Playlists"
             onClick={(e) => {
-              e.preventDefault();
+              e?.preventDefault?.();
               toggleDropdown('playlists');
             }}
             isDropdown
@@ -813,7 +820,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                 href="#"
                 className="flex items-center px-2.5 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors"
                 onClick={(e) => {
-                  e.preventDefault();
+                  e?.preventDefault?.();
                   handlePlaylistClick("Top Hits 2025");
                   if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                     setIsSidebarVisible(false);
@@ -827,7 +834,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                 href="#"
                 className="flex items-center px-2.5 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors"
                 onClick={(e) => {
-                  e.preventDefault();
+                  e?.preventDefault?.();
                   handlePlaylistClick("Chill Vibes");
                   if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                     setIsSidebarVisible(false);
@@ -841,7 +848,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                 href="#"
                 className="flex items-center px-2.5 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors"
                 onClick={(e) => {
-                  e.preventDefault();
+                  e?.preventDefault?.();
                   handlePlaylistClick("Party Mix");
                   if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                     setIsSidebarVisible(false);
@@ -862,7 +869,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
             }
             label="Liked Songs"
             onClick={(e) => {
-              if (e) e.preventDefault();
+              e?.preventDefault?.();
               handleLikedSongsClick();
               if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                 setIsSidebarVisible(false);
@@ -881,7 +888,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
             label="Saves"
             delay={200}
             onClick={(e) => {
-              if (e) e.preventDefault();
+              e?.preventDefault?.();
               handleSavesClick();
               if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                 setIsSidebarVisible(false);
@@ -899,7 +906,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
             label="Albums"
             delay={250}
             onClick={(e) => {
-              if (e) e.preventDefault();
+              e?.preventDefault?.();
               handleAlbumsClick();
               if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                 setIsSidebarVisible(false);
@@ -917,7 +924,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
             label="Artists"
             delay={350}
             onClick={(e) => {
-              if (e) e.preventDefault();
+              e?.preventDefault?.();
               handleArtistsClick();
               if (window.innerWidth < 640) { // sm breakpoint in Tailwind
                 setIsSidebarVisible(false);
@@ -1097,7 +1104,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                     <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-3 text-gray-500">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 0 1 6 0z" />
                       </svg>
                       Settings
                     </button>
@@ -1258,7 +1265,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                     <div
                       className="bg-gray-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md cursor-pointer hover-card-animation"
                       onClick={(e) => {
-                        e.preventDefault();
+                        e?.preventDefault?.();
                         handlePlaylistClick("Top Hits 2025");
                       }}
                     >
@@ -1269,7 +1276,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                     <div
                       className="bg-gray-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md cursor-pointer hover-card-animation"
                       onClick={(e) => {
-                        e.preventDefault();
+                        e?.preventDefault?.();
                         handlePlaylistClick("Chill Vibes");
                       }}
                     >
@@ -1280,7 +1287,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                     <div
                       className="bg-gray-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md cursor-pointer hover-card-animation"
                       onClick={(e) => {
-                        e.preventDefault();
+                        e?.preventDefault?.();
                         handlePlaylistClick("Party Mix");
                       }}
                     >
@@ -1347,7 +1354,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
 
                 {/* Main Content */}
                 <div className="pb-24">
-                  {/* Popular Tracks - mobile optimized */}
+                                   {/* Popular Tracks - mobile optimized */}
                   <section className="mb-6 sm:mb-8 md:mb-10 px-4 sm:px-0">
                     <h2 className="text-lg sm:text-xl font-semibold mb-4 md:mb-5 text-gray-800">Popular</h2>
                     <div className="bg-gray-50 rounded-xl sm:rounded-2xl shadow-sm overflow-hidden">
@@ -1372,7 +1379,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                            </svg>
+                              </svg>
                           </button>
                         </div>
                       ))}
@@ -1421,7 +1428,7 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
                             key={index}
                             className="bg-gray-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden relative h-20 sm:h-24 md:h-36 group"
                             onClick={(e) => {
-                              e.preventDefault();
+                              e?.preventDefault?.();
                               handleGenreClick(genre.name);
                             }}
                           >
@@ -1465,30 +1472,34 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
           {/* Now playing bar - fixed at bottom of container */}
           <div className="flex-shrink-0 bg-none">
             <NowPlayingBar
-              currentSong={currentSong}
-              isPlaying={isPlaying}
-              progress={progress}
-              duration={duration}
-              volume={volume}
-              isLiked={likedSongs.has(currentSong.id)}
-              isSaved={savedSongs.has(currentSong.id)}
-              onPlayPause={handlePlayPause}
-              onNext={nextSong}
-              onPrevious={previousSong}
-              onProgressChange={handleProgressChange}
-              onVolumeChange={handleVolumeChange}
-              onExpand={handleExpandCard}
-              onToggleLike={() => handleToggleLike(currentSong.id)}
-              onToggleSave={() => handleToggleSave(currentSong.id)}
-            />
-          </div>
+              currentSong={nowPlayingSong}
+               isPlaying={isPlaying}
+               progress={progress}
+               duration={duration}
+               volume={volume}
+               isLiked={likedSongs.has(nowPlayingSong.id)}
+               isSaved={savedSongs.has(nowPlayingSong.id)}
+               onPlayPause={handlePlayPause}
+               onNext={nextSong}
+               onPrevious={previousSong}
+               onProgressChange={handleProgressChange}
+               onVolumeChange={handleVolumeChange}
+               onExpand={handleExpandCard}
+               onToggleLike={() => {
+                handleToggleLike(nowPlayingSong.id);
+               }}
+               onToggleSave={() => {
+                handleToggleSave(nowPlayingSong.id);
+               }}
+             />
+           </div>
         </div>
       </div>
 
       {/* Expanded Song Card */}
-      {showExpandedCard && currentSong && (
+      {expandedSong && (
         <ExpandedSongCard
-          song={currentSong!}
+          song={expandedSong}
           isPlaying={isPlaying}
           progress={progress}
           duration={duration}
@@ -1512,12 +1523,11 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
           isShuffleOn={isShuffleOn}
           repeatMode={repeatMode}
           isAutoplayOn={isAutoplayOn}
-          isLiked={likedSongs.has(currentSong.id)}
-          isSaved={savedSongs.has(currentSong.id)}
-          onToggleLike={() => handleToggleLike(currentSong.id)}
-          onToggleSave={() => handleToggleSave(currentSong.id)}
+          isLiked={likedSongs.has(expandedSong.id)}
+          isSaved={savedSongs.has(expandedSong.id)}
+          onToggleLike={() => handleToggleLike(expandedSong.id)}
+          onToggleSave={() => handleToggleSave(expandedSong.id)}
           onAddToPlaylist={handleAddToPlaylist}
-          onCreatePlaylist={handleCreatePlaylist}
           availablePlaylists={Array.from(playlistSongs.keys())}
           onShuffleQueue={handleShuffleQueueWithToast}
           onClearQueue={handleClearQueueWithToast}
@@ -1563,7 +1573,5 @@ const playlistSet = new Set<number>(newPlaylistSongs.get(playlistName) || new Se
 
       {/* Audio Element */}
       <audio ref={audioRef} />
-</div>
-
-  );
+</div>);
 }
