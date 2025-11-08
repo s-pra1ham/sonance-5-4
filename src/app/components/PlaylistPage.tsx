@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { songs } from '../data/songs';
+import { songs, Song } from '../data/songs';
 
 interface PlaylistPageProps {
   playlistName: string;
@@ -35,7 +35,9 @@ const playlists = {
 };
 
 function PlaylistPage({ playlistName, onClose, onSongSelect, playlistSongs: actualPlaylistSongs }: PlaylistPageProps) {
-  const [playlistSongs, setPlaylistSongs] = useState([]);
+  // Add the <Song[]> generic type argument to useState
+const [playlistSongs, setPlaylistSongs] = useState<Song[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const playlist = playlists[playlistName as keyof typeof playlists] || {
     description: "Custom playlist",
