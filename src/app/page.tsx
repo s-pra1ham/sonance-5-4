@@ -452,7 +452,7 @@ export default function Home() {
   const handleAddToPlaylist = useCallback((playlistName: string) => {
     if (currentSong) {
       setPlaylistSongs(prev => {
-        const newPlaylistSongs = new Map(prev);
+        const newPlaylistSongs = new Map<string, Set<number>>(availablePlaylists);
         const playlistSet = new Set(newPlaylistSongs.get(playlistName) || new Set());
         
         if (playlistSet.has(currentSong.id)) {
@@ -474,7 +474,7 @@ export default function Home() {
   const handleCreatePlaylist = useCallback((playlistName: string, description: string) => {
     if (playlistName.trim()) {
       setPlaylistSongs(prev => {
-        const newPlaylistSongs = new Map(prev);
+        const newPlaylistSongs = new Map<string, Set<number>>(availablePlaylists);
         
         if (newPlaylistSongs.has(playlistName)) {
           // Playlist already exists
