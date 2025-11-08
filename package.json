@@ -7,12 +7,6 @@
     "type": "git",
     "url": "https://github.com/username/my-app-2.git"
   },
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
   "dependencies": {
     "framer-motion": "^12.7.3",
     "next": "15.3.0",
