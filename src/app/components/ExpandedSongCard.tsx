@@ -9,7 +9,6 @@ import VolumeControl from './VolumeControl';
 import Image from 'next/image';
 
 interface ExpandedSongCardProps {
-  onRemoveFromQueue?: (index: number) => void; 
   song: Song;
   isPlaying: boolean;
   progress: number;
@@ -38,6 +37,7 @@ interface ExpandedSongCardProps {
   availablePlaylists?: string[];
   onShuffleQueue?: () => void;
   onClearQueue?: () => void;
+  onRemoveFromQueue?: (index: number) => void; 
 }
 
 export default function ExpandedSongCard({
@@ -68,8 +68,11 @@ export default function ExpandedSongCard({
   onAddToPlaylist,
   availablePlaylists = [],
   onShuffleQueue,
-  onClearQueue
+  onClearQueue,
+  onRemoveFromQueue
 }: ExpandedSongCardProps) {
+  
+  
 
   const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
