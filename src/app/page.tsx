@@ -452,7 +452,7 @@ export default function Home() {
   const handleAddToPlaylist = useCallback((playlistName: string) => {
     if (currentSong) {
       setPlaylistSongs(prev => {
-        const newPlaylistSongs = new Map<string, Set<number>>(availablePlaylists);
+        const newPlaylistSongs = new Map<string, Set<number>>(prev);
         const playlistSet = new Set(newPlaylistSongs.get(playlistName) || new Set());
         
         if (playlistSet.has(currentSong.id)) {
