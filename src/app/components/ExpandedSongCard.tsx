@@ -9,6 +9,7 @@ import VolumeControl from './VolumeControl';
 import Image from 'next/image';
 
 interface ExpandedSongCardProps {
+  onRemoveFromQueue?: (index: number) => void; 
   song: Song;
   isPlaying: boolean;
   progress: number;
