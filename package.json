@@ -9,9 +9,9 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "",
+    "build": "next build",
     "start": "next start",
-    "lint": ""
+    "lint": "next lint"
   },
   "dependencies": {
     "framer-motion": "^12.7.3",
