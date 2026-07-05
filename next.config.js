@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configures the output directory for the build
-  output: "standalone",
+  // Configures the output directory for the build (commented out for Vercel deployment)
+  // output: "standalone",
   
   images: {
     remotePatterns: [
