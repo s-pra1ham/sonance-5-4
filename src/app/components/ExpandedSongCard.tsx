@@ -21,12 +21,10 @@ interface ExpandedSongCardProps {
   onProgressChange: (time: number) => void;
   onVolumeChange: (volume: number) => void;
   onClose: () => void;
-  onSelectSong: (songId: number) => void;
+  onSelectSong: (index: number) => void;
   onShuffleToggle: (isShuffleOn: boolean) => void;
-  onRepeatModeChange: (mode: number) => void;
   progressPercentage: number;
   isShuffleOn?: boolean;
-  repeatMode?: number;
   isAutoplayOn?: boolean;
   isLiked?: boolean;
   isSaved?: boolean;
@@ -55,10 +53,8 @@ export default function ExpandedSongCard({
   onClose,
   onSelectSong,
   onShuffleToggle,
-  onRepeatModeChange,
   progressPercentage,
   isShuffleOn = false,
-  repeatMode = 0,
   isAutoplayOn = false,
   isLiked = false,
   isSaved = false,
@@ -99,10 +95,7 @@ export default function ExpandedSongCard({
     console.log('Progress Debug:', { progress, duration, progressPercentage });
   }, [progress, duration, progressPercentage]);
 
-  // Calculate progress thumb position for animations
-  const progressThumbPosition = useMemo(() => {
-    return `calc(${progressPercentage}% - 6px)`;
-  }, [progressPercentage]);
+
 
   // Handle clicks outside to close the card
   useEffect(() => {
@@ -311,7 +304,7 @@ export default function ExpandedSongCard({
       document.removeEventListener('touchmove', handleGlobalTouchMove);
       document.removeEventListener('touchend', handleGlobalTouchEnd);
     };
-  }, [isDragging, localProgress, onProgressChange]);
+  }, [isDragging, localProgress, onProgressChange, calculateTimeFromPosition]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -348,9 +341,7 @@ export default function ExpandedSongCard({
     onShuffleToggle(!isShuffleOn);
   };
 
-  const handleRepeatModeChange = () => {
-    onRepeatModeChange((repeatMode + 1) % 3);
-  };
+
 
   const handleAutoplayToggle = () => {
     onAutoplayToggle?.(!isAutoplayOn);
@@ -678,7 +669,7 @@ export default function ExpandedSongCard({
               {suggestedSongs.slice(0, 5).map((queueSong, index) => (
                 <div
                   key={queueSong.id}
-                  onClick={() => onSelectSong(queueSong.id - 1)}
+                  onClick={() => onSelectSong(index)}
                   className={`flex items-center bg-white/5 hover:bg-white/10 p-3 rounded-lg cursor-pointer transition-colors group ${index === 0 ? 'bg-white/8' : ''
                     }`}
                 >
@@ -765,7 +756,7 @@ export default function ExpandedSongCard({
           ) : (
             <div className="text-center py-8">
               <div className="text-gray-400 text-sm">No songs in queue</div>
-              <div className="text-gray-500 text-xs mt-1">Add songs to see what's playing next</div>
+              <div className="text-gray-500 text-xs mt-1">Add songs to see what&apos;s playing next</div>
             </div>
           )}
 

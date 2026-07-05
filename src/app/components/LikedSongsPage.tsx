@@ -2,19 +2,16 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { songs } from '../data/songs';
+import { Song } from '../data/songs';
 
 interface LikedSongsPageProps {
   onClose: () => void;
   onSongSelect: (index: number) => void;
-  likedSongs: number[];
-  isPlaying?: boolean;
-  currentSong?: any;
+  likedSongs: Song[];
 }
 
-const LikedSongsPage: React.FC<LikedSongsPageProps> = ({ onClose, onSongSelect, likedSongs: likedSongIds, isPlaying = false, currentSong }) => {
-  // Filter songs based on liked song IDs
-  const likedSongsData = songs.filter(song => likedSongIds.includes(song.id));
+const LikedSongsPage: React.FC<LikedSongsPageProps> = ({ onClose, onSongSelect, likedSongs = [] }) => {
+  const likedSongsData = likedSongs;
   
   return (
     <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
@@ -51,18 +48,12 @@ const LikedSongsPage: React.FC<LikedSongsPageProps> = ({ onClose, onSongSelect, 
         <div className="flex items-center mb-6">
           <button 
             className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-indigo-700 transition-colors mr-4"
-            onClick={() => likedSongsData.length > 0 && onSongSelect(likedSongsData[0].id - 1)} // Play the first liked song
+            onClick={() => likedSongsData.length > 0 && onSongSelect(0)} // Play the first liked song
             aria-label="Play liked songs"
             disabled={likedSongsData.length === 0}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" aria-hidden="true">
               <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
-            </svg>
-          </button>
-          
-          <button className="p-2 text-gray-500 hover:text-gray-800 transition-colors" aria-label="Like">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
             </svg>
           </button>
         </div>
@@ -84,7 +75,7 @@ const LikedSongsPage: React.FC<LikedSongsPageProps> = ({ onClose, onSongSelect, 
                 <tr 
                   key={song.id} 
                   className="hover:bg-gray-50 cursor-pointer transition-colors"
-                  onClick={() => onSongSelect(song.id - 1)}
+                  onClick={() => onSongSelect(index)}
                 >
                   <td className="px-2 sm:px-3 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{index + 1}</td>
                   <td className="px-2 sm:px-3 py-3 sm:py-4 whitespace-nowrap">
@@ -131,18 +122,9 @@ const LikedSongsPage: React.FC<LikedSongsPageProps> = ({ onClose, onSongSelect, 
             </button>
           </div>
         )}
-        
-        {/* Find more songs section */}
-        <div className="mt-4 sm:mt-6 p-3 sm:p-5 bg-gray-50 rounded-xl shadow-sm border border-gray-100">
-          <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-1 sm:mb-2">Find more songs you&apos;ll like</h2>
-          <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">Explore new music based on your taste.</p>
-          <button className="px-4 sm:px-5 py-1.5 sm:py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full font-medium text-xs sm:text-sm transition-colors shadow-sm">
-            Discover Now
-          </button>
-        </div>
       </div>
     </div>
   );
 };
 
-export default LikedSongsPage; 
+export default LikedSongsPage;

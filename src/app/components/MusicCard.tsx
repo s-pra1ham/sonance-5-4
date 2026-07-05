@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { cardVariants } from '../utils/transitions';
+import Image from 'next/image';
 
 interface MusicCardProps {
   imageUrl: string;
@@ -22,10 +23,12 @@ export default function MusicCard({ imageUrl, title, artist, onClick }: MusicCar
       whileTap="tap"
     >
       <motion.div className="rounded-lg overflow-hidden mb-2 relative aspect-square">
-        <img
+        <Image
           src={imageUrl}
           alt={`${title} by ${artist}`}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
+          sizes="144px"
           loading="lazy"
         />
       </motion.div>

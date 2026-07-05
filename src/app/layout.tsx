@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AnimatePresence } from "framer-motion";
 import "./globals.css";
 import { LoadingProvider } from "./context/LoadingContext";
+import { MusicPlayerProvider } from "./context/MusicPlayerContext";
+import AppLayout from "./components/AppLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,11 +44,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LoadingProvider>
-          <AnimatePresence mode="wait" initial={false} key="main-content-presence">
-            {children}
-          </AnimatePresence>
+          <MusicPlayerProvider>
+            <AppLayout>
+              <AnimatePresence mode="wait" initial={false} key="main-content-presence">
+                {children}
+              </AnimatePresence>
+            </AppLayout>
+          </MusicPlayerProvider>
         </LoadingProvider>
       </body>
     </html>
   );
 }
+

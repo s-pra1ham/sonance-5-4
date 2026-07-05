@@ -4,14 +4,13 @@ const nextConfig = {
   output: "standalone",
   
   images: {
-    // List of allowed external domains for image optimization
-    domains: [
-      'images.unsplash.com', 
-      'i.scdn.co', 
-      'source.unsplash.com', 
-      'picsum.photos', 
-      'placehold.co'
-      // Removed '/public/cover' and '/public' as local paths are not domains
+    remotePatterns: [
+      { hostname: 'images.unsplash.com' },
+      { hostname: 'i.scdn.co' },
+      { hostname: 'source.unsplash.com' },
+      { hostname: 'picsum.photos' },
+      { hostname: 'placehold.co' },
+      { hostname: 'c.saavncdn.com' }
     ],
   },
   // Disables the 'x-powered-by: Next.js' header

@@ -2,53 +2,60 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { songs } from '../data/songs';
+import { Song } from '../data/songs';
 
 interface SavesPageProps {
   onClose: () => void;
   onSongSelect: (index: number) => void;
-  savedSongs: number[];
-  isPlaying?: boolean;
-  currentSong?: any;
+  savedSongs: Song[];
 }
 
-const SavesPage: React.FC<SavesPageProps> = ({ onClose, onSongSelect, savedSongs: savedSongIds, isPlaying = false, currentSong }) => {
+const SavesPage: React.FC<SavesPageProps> = ({ onClose, onSongSelect, savedSongs = [] }) => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'artists' | 'albums' | 'songs' | 'playlists'>('all');
 
-  // Filter songs based on saved song IDs
-  const savedSongsData = songs.filter(song => savedSongIds.includes(song.id));
-  // For demo purposes, creating categories of saved items
+  const savedSongsData = savedSongs;
+
+  // Mock categories of saved items
   const allCategories = [
     {
       id: 1,
       title: 'Favorite Artists',
       type: 'artists' as const,
-      items: [
-        { type: 'artist', name: 'David Kushner', image: songs.find(s => s.artist === 'David Kushner')?.cover || '', count: '35 songs' },
-        { type: 'artist', name: 'Katy Perry', image: songs.find(s => s.artist === 'Katy Perry')?.cover || '', count: '28 songs' },
-        { type: 'artist', name: 'OneRepublic', image: songs.find(s => s.artist === 'OneRepublic')?.cover || '', count: '15 songs' },
-      ]
+      items: savedSongsData.length > 0 
+        ? Array.from(new Set(savedSongsData.map(s => s.artist))).map(artist => ({
+            type: 'artist',
+            name: artist,
+            image: savedSongsData.find(s => s.artist === artist)?.cover || '/cover-placeholder.png',
+            count: 'Saved Artist'
+          }))
+        : []
     },
     {
       id: 2,
       title: 'Albums',
       type: 'albums' as const,
-      items: songs.slice(0, 6).map(song => ({
-        type: 'album',
-        name: `${song.title} - Album`,
-        image: song.cover,
-        count: 'Album • ' + song.artist
-      }))
+      items: savedSongsData.length > 0
+        ? Array.from(new Set(savedSongsData.map(s => s.album))).map(albumName => {
+            const albumSong = savedSongsData.find(s => s.album === albumName);
+            return {
+              type: 'album',
+              name: albumName,
+              image: albumSong?.cover || '/cover-placeholder.png',
+              count: 'Album • ' + (albumSong?.artist || 'Various Artists')
+            };
+          })
+        : []
     },
     {
       id: 3,
       title: 'Saved Songs',
       type: 'songs' as const,
-      items: savedSongsData.map(song => ({
+      items: savedSongsData.map((song, index) => ({
         type: 'song',
         name: song.title,
         image: song.cover,
-        count: song.artist
+        count: song.artist,
+        index
       }))
     }
   ];
@@ -113,36 +120,10 @@ const SavesPage: React.FC<SavesPageProps> = ({ onClose, onSongSelect, savedSongs
       <div className="p-6 bg-gradient-to-b from-amber-800/10 to-neutral-50/0">
         {/* Filter options */}
         <div className="flex items-center gap-3 mb-8 flex-wrap">
-          <button
-            className={getFilterButtonStyle('all')}
-            onClick={() => setActiveFilter('all')}
-          >
-            All items
-          </button>
-          <button
-            className={getFilterButtonStyle('artists')}
-            onClick={() => setActiveFilter('artists')}
-          >
-            Artists
-          </button>
-          <button
-            className={getFilterButtonStyle('albums')}
-            onClick={() => setActiveFilter('albums')}
-          >
-            Albums
-          </button>
-          <button
-            className={getFilterButtonStyle('songs')}
-            onClick={() => setActiveFilter('songs')}
-          >
-            Songs
-          </button>
-          <button
-            className={getFilterButtonStyle('playlists')}
-            onClick={() => setActiveFilter('playlists')}
-          >
-            Playlists
-          </button>
+          <button className={getFilterButtonStyle('all')} onClick={() => setActiveFilter('all')}>All items</button>
+          <button className={getFilterButtonStyle('artists')} onClick={() => setActiveFilter('artists')}>Artists</button>
+          <button className={getFilterButtonStyle('albums')} onClick={() => setActiveFilter('albums')}>Albums</button>
+          <button className={getFilterButtonStyle('songs')} onClick={() => setActiveFilter('songs')}>Songs</button>
         </div>
 
         {/* Show message when no items found */}
@@ -157,10 +138,7 @@ const SavesPage: React.FC<SavesPageProps> = ({ onClose, onSongSelect, savedSongs
               {activeFilter === 'all' ? 'No saved items yet' : `No saved ${activeFilter} yet`}
             </h3>
             <p className="text-neutral-500 mb-4">
-              {activeFilter === 'all'
-                ? 'Items you save will appear here'
-                : `${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)} you save will appear here`
-              }
+              Items you save will appear here
             </p>
             <button
               onClick={onClose}
@@ -177,27 +155,22 @@ const SavesPage: React.FC<SavesPageProps> = ({ onClose, onSongSelect, savedSongs
             <div key={category.id} className="mb-10">
               <h2 className="text-xl font-semibold mb-5 text-gray-800">{category.title}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                {category.items.map((item, index) => (
+                {category.items.map((item: { type: string; name: string; image: string; count: string; index?: number }, idx) => (
                   <div
-                    key={`${category.id}-${index}`}
+                    key={`${category.id}-${idx}`}
                     className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all"
                     onClick={() => {
-                      if (item.type === 'song') {
-                        const songIndex = songs.findIndex(s => s.title === item.name);
-                        if (songIndex !== -1) {
-                          onSongSelect(songIndex);
-                        }
+                      if (item.type === 'song' && item.index !== undefined) {
+                        onSongSelect(item.index);
                       }
                     }}
                   >
-                    <div className={`w-full overflow-hidden mb-3 shadow-sm ${item.type === 'artist' ? 'aspect-square rounded-full' : 'aspect-square rounded-lg'
-                      }`}>
+                    <div className={`w-full overflow-hidden mb-3 shadow-sm aspect-square relative ${item.type === 'artist' ? 'rounded-full' : 'rounded-lg'}`}>
                       <Image
                         src={item.image}
                         alt={item.name}
-                        className="w-full h-full object-cover"
-                        width={100}
-                        height={100}
+                        className="object-cover"
+                        fill
                       />
                     </div>
                     <h3 className="font-medium text-sm mb-1 truncate text-gray-800">{item.name}</h3>
@@ -205,16 +178,6 @@ const SavesPage: React.FC<SavesPageProps> = ({ onClose, onSongSelect, savedSongs
                       {item.type === 'song' && (
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 inline-block">
                           <path fillRule="evenodd" d="M19.952 1.651a.75.75 0 01.298.599V16.303a3 3 0 01-2.176 2.884l-1.32.377a2.553 2.553 0 11-1.403-4.909l2.311-.66a1.5 1.5 0 001.088-1.442V6.994l-9 2.572v9.737a3 3 0 01-2.176 2.884l-1.32.377a2.553 2.553 0 11-1.402-4.909l2.31-.66a1.5 1.5 0 001.088-1.442V9.017 5.25a.75.75 0 01.544-.721l10.5-3a.75.75 0 01.658.122z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                      {item.type === 'album' && (
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 inline-block">
-                          <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm0 8.625a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25zM12 18.75a6.75 6.75 0 110-13.5 6.75 6.75 0 010 13.5z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                      {item.type === 'artist' && (
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 inline-block">
-                          <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
                         </svg>
                       )}
                       <span className="ml-1">{item.count}</span>
@@ -230,4 +193,4 @@ const SavesPage: React.FC<SavesPageProps> = ({ onClose, onSongSelect, savedSongs
   );
 };
 
-export default SavesPage; 
+export default SavesPage;
